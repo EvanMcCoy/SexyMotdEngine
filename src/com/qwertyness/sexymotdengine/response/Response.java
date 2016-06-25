@@ -42,16 +42,23 @@ public class Response {
 		}
 		
 		if (info.ENABLE_MAX_PLAYERS) {
-			if (info.STRING_MAX_PLAYERS != null && info.STRING_MAX_PLAYERS.contains("%")) {
-				String variableName = info.STRING_MAX_PLAYERS.substring(1, info.STRING_MAX_PLAYERS.lastIndexOf("%"));;
-				String variableOperator = info.STRING_MAX_PLAYERS.substring(info.STRING_MAX_PLAYERS.lastIndexOf("%")+1);
-				for (Variable variable : Info.variables) {
-					if (variable.name.equalsIgnoreCase(variableName)) {
-						try {
-							String value = variable.handleOperators(variableOperator, playerName, playerAddress.getHostAddress()).value;
-							this.maxPlayers = Integer.parseInt(value);
-						} catch (NumberFormatException e) {this.maxPlayers = ActivePlugin.activePlugin.maxPlayers();}
+			if (info.STRING_MAX_PLAYERS != null) {
+				if (info.STRING_MAX_PLAYERS.contains("%")) {
+					String variableName = info.STRING_MAX_PLAYERS.substring(1, info.STRING_MAX_PLAYERS.lastIndexOf("%"));;
+					String variableOperator = info.STRING_MAX_PLAYERS.substring(info.STRING_MAX_PLAYERS.lastIndexOf("%")+1);
+					for (Variable variable : Info.variables) {
+						if (variable.name.equalsIgnoreCase(variableName)) {
+							try {
+								String value = variable.handleOperators(variableOperator, playerName, playerAddress.getHostAddress()).value;
+								this.maxPlayers = Integer.parseInt(value);
+							} catch (NumberFormatException e) {this.maxPlayers = ActivePlugin.activePlugin.maxPlayers();}
+						}
 					}
+				}
+				else {
+					try {
+						this.maxPlayers = Integer.parseInt(info.STRING_MAX_PLAYERS);
+					} catch(NumberFormatException e) {this.maxPlayers = 0;}
 				}
 			}
 			else {
@@ -60,7 +67,7 @@ public class Response {
 		} else {this.maxPlayers = ActivePlugin.activePlugin.maxPlayers();}
 		
 		if (info.ENABLE_PLAYER_COUNT) {
-			if (info.STRING_PLAYER_COUNT != null) {
+			if (info.STRING_PLAYER_COUNT.size() > 0) {
 				String variableString = info.STRING_PLAYER_COUNT.get(new Random().nextInt(info.STRING_PLAYER_COUNT.size()));
 				if (variableString.contains("%")) {
 					String variableName = variableString.substring(1, variableString.lastIndexOf("%"));

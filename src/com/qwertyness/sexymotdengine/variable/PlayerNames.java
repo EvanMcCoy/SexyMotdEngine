@@ -14,7 +14,9 @@ public class PlayerNames extends Variable {
 		for (String name : ActivePlugin.activePlugin.playerNames()) {
 			playerNames += name + ", ";
 		}
-		playerNames = playerNames.substring(0, playerNames.length()-2);
+		if (playerNames.length() >= 2) {
+			playerNames = playerNames.substring(0, playerNames.length()-2);
+		}
 		return playerNames;
 	}
 	

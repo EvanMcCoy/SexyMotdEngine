@@ -32,7 +32,6 @@ public class ActivePlugin {
 		Info.variables.add(new PlayerNames());
 		Info.init();
 		Util.checkOverlayOn();
-		
 	}
 	
 	public static void disable() {
@@ -53,6 +52,8 @@ public class ActivePlugin {
 		public abstract int onlinePlayers();
 		public abstract String[] playerNames();
 		public abstract UUID getPlayerUUID(String name);
+		public abstract boolean hasPermission(UUID uuid, String permission);
+		public abstract void kickPlayer(UUID uuid, String reason);
 		
 		public abstract String color(String input);
 		

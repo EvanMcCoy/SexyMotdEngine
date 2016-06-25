@@ -44,5 +44,4 @@ public class MaxPlayers extends Variable {
 		}
 		return new Value(value, "%" + this.name + "%" + operator);
 	}
-	
 }

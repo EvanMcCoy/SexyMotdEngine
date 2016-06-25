@@ -7,6 +7,7 @@ public class CustomVariable {
 	public String name;
 	public VariableType type;
 	public Variable builtInVariable;
+	public String rawBuiltInVariable;
 	public Operator operator;
 	public String condition;
 	public String value;
@@ -16,8 +17,9 @@ public class CustomVariable {
 	
 	public CustomVariable(String name, String variable, String operator, String condition, String value, String negValue) {
 		this.name = name;
+		this.rawBuiltInVariable = variable;
 		for (Variable builtInVariable : Info.variables) {
-			if (builtInVariable.name.equalsIgnoreCase(variable)) {
+			if (variable.contains(builtInVariable.name)) {
 				this.builtInVariable = builtInVariable;
 			}
 		}

@@ -8,10 +8,9 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-
 import com.qwertyness.sexymotdengine.ActivePlugin;
 import com.qwertyness.sexymotdengine.response.Info;
-import com.qwertyness.sexymotdengine.util.ImageUtil;
+import com.qwertyness.sexymotdengine.variable.ArgumentVariable;
 import com.qwertyness.sexymotdengine.variable.CustomVariable;
 import com.qwertyness.sexymotdengine.variable.CustomVariable.Operator;
 import com.qwertyness.sexymotdengine.variable.Value;
@@ -24,7 +23,13 @@ public class Util {
 		String[] variableStrings = input.split("%");
 		for (int i = 1;i < variableStrings.length;i++) {
 			for (Variable variable : Info.variables) {
-				if (variableStrings[i].equalsIgnoreCase(variable.name)) {
+				if (variable instanceof ArgumentVariable) {
+					List<Value> values = ((ArgumentVariable)variable).evaluate(playerName, address, input);
+					for (Value value : values) {
+						input = input.replace(value.replacing, value.value);
+					}
+				}
+				else if (variableStrings[i].equalsIgnoreCase(variable.name)) {
 					Value value = VariableUtil.checkForOperators(variable, ((i+1) < variableStrings.length) ? variableStrings[i+1] : "^", playerName, address);
 					input = input.replace(value.replacing, value.value);
 				}
@@ -63,7 +68,6 @@ public class Util {
 	
 	public static String replaceCustomVariables(String input, String playerName, String address) {
 		boolean newplayer = ActivePlugin.activePlugin.newPlayer(playerName);
-		
 		for (CustomVariable variable : Info.getActiveInfo().customVariables) {
 			if (!input.toLowerCase().contains(variable.name.toLowerCase())) {
 				continue;
@@ -111,6 +115,29 @@ public class Util {
 					}
 					else {
 						input = replaceCustomVariable(variable, input, true);
+					}
+				}
+			}
+			else {
+				if (variable.operator == Operator.EQUAL) {
+					if (variable.builtInVariable instanceof ArgumentVariable) {
+						List<Value> values = ((ArgumentVariable)variable.builtInVariable).evaluate(playerName, address, "%" + variable.rawBuiltInVariable + "%");
+						for (Value value : values) {
+							if (checkStringCondition(variable, value.value)) {
+								input = replaceCustomVariable(variable, input, false);
+							}
+							else {
+								input = replaceCustomVariable(variable, input, true);
+							}
+						}
+					}
+					else {
+						if (checkStringCondition(variable, variable.builtInVariable.getValue(playerName, address))) {
+							input = replaceCustomVariable(variable, input, false);
+						}
+						else {
+							input = replaceCustomVariable(variable, input, true);
+						}
 					}
 				}
 			}
@@ -212,7 +239,7 @@ public class Util {
 		}
 		
 		if (info.ENABLE_AVATAR_ICON && info.ENABLE_OVERLAY_IMAGE) {
-			for (BufferedImage overlay : overlay) {
+			for (BufferedImage overlay : ImageUtil.getGIFFrames()) {
 				icon = ImageUtil.resizeImage(avatar);
 				icon.getGraphics().drawImage(overlay, 0, 0, 64, 64, null);
 				images.add(icon);
