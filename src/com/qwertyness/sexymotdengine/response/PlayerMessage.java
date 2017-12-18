@@ -4,31 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerMessage {
-	public List<AnimatedText> lines;
+	public List<VariableText> lines;
 	
-	public PlayerMessage(List<AnimatedText> lines, Info info) {
+	public PlayerMessage(List<VariableText> lines, Mode mode) {
 		this.lines = lines;
-		this.buildPlayerMessage(info);
+		this.buildPlayerMessage(mode);
 	}
 	
-	public void buildPlayerMessage(Info info) {
-		for (AnimatedText text : this.lines) {
-			text.buildText(info);
+	public void buildPlayerMessage(Mode mode) {
+		for (VariableText text : this.lines) {
+			text.buildText(mode);
 		}
 	}
 	
-	public List<List<String>> variableBuild(String playerName, String address) {
-		List<List<String>> builtLines = new ArrayList<List<String>>();
-		for (AnimatedText text : this.lines) {
+	public List<String> variableBuild(String playerName, String address) {
+		List<String> builtLines = new ArrayList<String>();
+		for (VariableText text : this.lines) {
 			builtLines.add(text.variableBuild(playerName, address));
 		}
 		return builtLines;
 	}
 	
-	public List<String> dynamicBuild(String playerName, String address, List<List<String>> preText, int iteration) {
+	public List<String> dynamicBuild(String playerName, String address, List<String> preText) {
 		List<String> builtLines = new ArrayList<String>();
-		for (List<String> text : preText) {
-			builtLines.add(lines.get(preText.indexOf(text)).dynamicBuild(playerName, address, text, iteration));
+		for (String text : preText) {
+			builtLines.add(lines.get(preText.indexOf(text)).dynamicBuild(playerName, address, text));
 		}
 		return builtLines;
 	}

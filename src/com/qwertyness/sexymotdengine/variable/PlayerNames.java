@@ -1,7 +1,6 @@
 package com.qwertyness.sexymotdengine.variable;
 
-import com.qwertyness.sexymotdengine.ActivePlugin;
-import com.qwertyness.sexymotdengine.response.Info;
+import com.qwertyness.sexymotdengine.MotdState;
 
 public class PlayerNames extends Variable {
 
@@ -11,7 +10,7 @@ public class PlayerNames extends Variable {
 	
 	public String getValue(String playerName, String ip) {
 		String playerNames = "";
-		for (String name : ActivePlugin.activePlugin.playerNames()) {
+		for (String name : MotdState.getActivePlugin().playerNames()) {
 			playerNames += name + ", ";
 		}
 		if (playerNames.length() >= 2) {
@@ -21,7 +20,7 @@ public class PlayerNames extends Variable {
 	}
 	
 	public String[] getRawValue() {
-		return ActivePlugin.activePlugin.playerNames();
+		return MotdState.getActivePlugin().playerNames();
 	}
 	
 	public Value handleOperators(String operatorString, String playerName, String ip) {
@@ -33,7 +32,7 @@ public class PlayerNames extends Variable {
 				value = this.getRawValue()[index];
 			}
 			else {
-				value = Info.getActiveInfo().DEFAULT_PLAYER_NAME;
+				value = MotdState.getActiveMode().DEFAULT_PLAYER_NAME;
 			}
 			operator = "[" + index + "]";
 		}

@@ -1,6 +1,6 @@
 package com.qwertyness.sexymotdengine.variable;
 
-import com.qwertyness.sexymotdengine.ActivePlugin;
+import com.qwertyness.sexymotdengine.MotdState;
 import com.qwertyness.sexymotdengine.util.VariableUtil;
 
 public class OnlinePlayers extends Variable {
@@ -11,11 +11,11 @@ public class OnlinePlayers extends Variable {
 
 	@Override
 	public String getValue(String playerName, String ip) {
-		return new Integer(ActivePlugin.activePlugin.onlinePlayers()).toString();
+		return new Integer(MotdState.getActivePlugin().onlinePlayers()).toString();
 	}
 
 	public int getRawValue() {
-		return ActivePlugin.activePlugin.onlinePlayers();
+		return MotdState.getActivePlugin().onlinePlayers();
 	}
 	
 	public Value handleOperators(String operatorString, String playerName, String ip) {
@@ -24,19 +24,19 @@ public class OnlinePlayers extends Variable {
 		char operatorChar = operatorString.charAt(0);
 		boolean hasOperator = false;
 		if (operatorChar == '+') {
-			value = new Integer(this.getRawValue() + VariableUtil.trimNumber(operatorString)).toString();
+			value = new Integer((int)Math.round(this.getRawValue() + VariableUtil.trimNumber(operatorString))).toString();
 			hasOperator = true;
 		}
 		else if (operatorChar == '-') {
-			value = new Integer(this.getRawValue() - VariableUtil.trimNumber(operatorString)).toString();
+			value = new Integer((int)Math.round(this.getRawValue() - VariableUtil.trimNumber(operatorString))).toString();
 			hasOperator = true;
 		}
 		else if (operatorChar == '*') {
-			value = new Integer(this.getRawValue() * VariableUtil.trimNumber(operatorString)).toString();
+			value = new Integer((int)Math.round(this.getRawValue() * VariableUtil.trimNumber(operatorString))).toString();
 			hasOperator = true;
 		}
 		else if (operatorChar == '/') {
-			value = new Integer(this.getRawValue() / VariableUtil.trimNumber(operatorString)).toString();
+			value = new Integer((int)Math.round(this.getRawValue() / VariableUtil.trimNumber(operatorString))).toString();
 			hasOperator = true;
 		}
 		

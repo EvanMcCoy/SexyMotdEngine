@@ -1,6 +1,6 @@
 package com.qwertyness.sexymotdengine.variable;
 
-import com.qwertyness.sexymotdengine.ActivePlugin;
+import com.qwertyness.sexymotdengine.MotdState;
 import com.qwertyness.sexymotdengine.util.VariableUtil;
 
 public class MaxPlayers extends Variable {
@@ -10,11 +10,11 @@ public class MaxPlayers extends Variable {
 	}
 	
 	public String getValue(String playerName, String ip) {
-		return new Integer(ActivePlugin.activePlugin.maxPlayers()).toString();
+		return new Integer(MotdState.getActivePlugin().maxPlayers()).toString();
 	}
 	
 	public int getRawValue() {
-		return ActivePlugin.activePlugin.maxPlayers();
+		return MotdState.getActivePlugin().maxPlayers();
 	}
 	
 	public Value handleOperators(String operatorString, String playerName, String ip) {
@@ -23,19 +23,19 @@ public class MaxPlayers extends Variable {
 		char operatorChar = operatorString.charAt(0);
 		boolean hasOperator = false;
 		if (operatorChar == '+') {
-			value = new Integer(this.getRawValue() + VariableUtil.trimNumber(operatorString)).toString();
+			value = new Integer((int)Math.round(this.getRawValue() + VariableUtil.trimNumber(operatorString))).toString();
 			hasOperator = true;
 		}
 		else if (operatorChar == '-') {
-			value = new Integer(this.getRawValue() - VariableUtil.trimNumber(operatorString)).toString();
+			value = new Integer((int)Math.round(this.getRawValue() - VariableUtil.trimNumber(operatorString))).toString();
 			hasOperator = true;
 		}
 		else if (operatorChar == '*') {
-			value = new Integer(this.getRawValue() * VariableUtil.trimNumber(operatorString)).toString();
+			value = new Integer((int)Math.round(this.getRawValue() * VariableUtil.trimNumber(operatorString))).toString();
 			hasOperator = true;
 		}
 		else if (operatorChar == '/') {
-			value = new Integer(this.getRawValue() / VariableUtil.trimNumber(operatorString)).toString();
+			value = new Integer((int)Math.round(this.getRawValue() / VariableUtil.trimNumber(operatorString))).toString();
 			hasOperator = true;
 		}
 		

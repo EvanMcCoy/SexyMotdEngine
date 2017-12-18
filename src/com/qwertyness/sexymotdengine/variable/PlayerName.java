@@ -1,7 +1,6 @@
 package com.qwertyness.sexymotdengine.variable;
 
-import com.qwertyness.sexymotdengine.ActivePlugin;
-import com.qwertyness.sexymotdengine.response.Info;
+import com.qwertyness.sexymotdengine.MotdState;
 
 public class PlayerName extends Variable {
 	public static PlayerName instance;
@@ -12,10 +11,10 @@ public class PlayerName extends Variable {
 	}
 	
 	public String getValue(String playerName, String ip) {
-		if (ActivePlugin.activePlugin.newPlayer(ip)) {
-			return Info.getActiveInfo().DEFAULT_PLAYER_NAME;
+		if (MotdState.getActivePlugin().newPlayer(ip)) {
+			return MotdState.getActiveMode().DEFAULT_PLAYER_NAME;
 		}
-		return ActivePlugin.activePlugin.playerName(ip);
+		return MotdState.getActivePlugin().playerName(ip);
 	}
 	
 	public Value handleOperators(String operatorString, String playerName, String ip) {

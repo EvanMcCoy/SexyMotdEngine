@@ -2,8 +2,7 @@ package com.qwertyness.sexymotdengine.variable;
 
 import java.util.Random;
 
-import com.qwertyness.sexymotdengine.ActivePlugin;
-import com.qwertyness.sexymotdengine.response.Info;
+import com.qwertyness.sexymotdengine.MotdState;
 
 public class RandomPlayer extends Variable {
 
@@ -12,9 +11,9 @@ public class RandomPlayer extends Variable {
 	}
 	
 	public String getValue(String playerName, String ip) {
-		String[] players = ActivePlugin.activePlugin.playerNames();
+		String[] players = MotdState.getActivePlugin().playerNames();
 		if (players.length < 1) {
-			return Info.getActiveInfo().DEFAULT_PLAYER_NAME;
+			return MotdState.getActiveMode().DEFAULT_PLAYER_NAME;
 		}
 		int index = new Random().nextInt(players.length);
 		return players[index];

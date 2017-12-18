@@ -3,13 +3,12 @@ package com.qwertyness.sexymotdengine.util;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import com.qwertyness.sexymotdengine.ActivePlugin;
-import com.qwertyness.sexymotdengine.response.Info;
+import com.qwertyness.sexymotdengine.MotdState;
+import com.qwertyness.sexymotdengine.response.Mode;
 import com.qwertyness.sexymotdengine.variable.ArgumentVariable;
 import com.qwertyness.sexymotdengine.variable.CustomVariable;
 import com.qwertyness.sexymotdengine.variable.CustomVariable.Operator;
@@ -17,12 +16,12 @@ import com.qwertyness.sexymotdengine.variable.Value;
 import com.qwertyness.sexymotdengine.variable.Variable;
 
 public class Util {
-	public static List<BufferedImage> overlay = new ArrayList<BufferedImage>();
+	public static BufferedImage overlay;
 	
 	public static String replaceVariables(String input, String playerName, String address) {
 		String[] variableStrings = input.split("%");
 		for (int i = 1;i < variableStrings.length;i++) {
-			for (Variable variable : Info.variables) {
+			for (Variable variable : Mode.variables) {
 				if (variable instanceof ArgumentVariable) {
 					List<Value> values = ((ArgumentVariable)variable).evaluate(playerName, address, input);
 					for (Value value : values) {
@@ -38,8 +37,8 @@ public class Util {
 		return input;
 	}
 	
-	public static String replaceStaticCustomVariables(String input, Info info) {
-		for (CustomVariable variable : info.customVariables) {
+	public static String replaceStaticCustomVariables(String input, Mode mode) {
+		for (CustomVariable variable : mode.customVariables) {
 			if (!input.toLowerCase().contains(variable.name.toLowerCase())) {
 				continue;
 			}
@@ -47,7 +46,7 @@ public class Util {
 				continue;
 			}
 			else if (variable.builtInVariable.name.contains("maxplayers".toLowerCase())) {
-				if (checkNumericCondition(variable, ActivePlugin.activePlugin.maxPlayers())) {
+				if (checkNumericCondition(variable, MotdState.getActivePlugin().maxPlayers())) {
 					input = replaceCustomVariable(variable, input, false);
 				}
 				else {
@@ -55,7 +54,7 @@ public class Util {
 				}
 			}
 			else if (variable.builtInVariable.name.contains("version".toLowerCase())) {
-				if (checkStringCondition(variable, ActivePlugin.activePlugin.version())) {
+				if (checkStringCondition(variable, MotdState.getActivePlugin().version())) {
 					input = replaceCustomVariable(variable, input, false);
 				}
 				else {
@@ -67,8 +66,8 @@ public class Util {
 	}
 	
 	public static String replaceCustomVariables(String input, String playerName, String address) {
-		boolean newplayer = ActivePlugin.activePlugin.newPlayer(playerName);
-		for (CustomVariable variable : Info.getActiveInfo().customVariables) {
+		boolean newplayer = MotdState.getActivePlugin().newPlayer(playerName);
+		for (CustomVariable variable : MotdState.getActiveMode().customVariables) {
 			if (!input.toLowerCase().contains(variable.name.toLowerCase())) {
 				continue;
 			}
@@ -96,7 +95,7 @@ public class Util {
 			else if (variable.builtInVariable.name.contains("groupname".toLowerCase())) {
 				if (variable.operator == Operator.EQUAL) {
 					boolean validGroup = false;
-					for (String group : ActivePlugin.activePlugin.groupNames(playerName)) {
+					for (String group : MotdState.getActivePlugin().groupNames(playerName)) {
 						if (checkStringCondition(variable, group)) {
 							input = replaceCustomVariable(variable, input, false);
 							validGroup = true;
@@ -146,9 +145,9 @@ public class Util {
 	}
 	
 	public static String replaceDynamicCustomVariables(String input) {
-		int onlinePlayers = ActivePlugin.activePlugin.onlinePlayers();
+		int onlinePlayers = MotdState.getActivePlugin().onlinePlayers();
 		
-		for (CustomVariable variable : Info.getActiveInfo().customVariables) {
+		for (CustomVariable variable : MotdState.getActiveMode().customVariables) {
 			if (!input.toLowerCase().contains(variable.name.toLowerCase())) {
 				continue;
 			}
@@ -225,45 +224,38 @@ public class Util {
 		return input;
 	}
 	
-	public static List<BufferedImage> getFavicon(String playerName) {
-		Info info = Info.getActiveInfo();
-		List<BufferedImage> images = new ArrayList<BufferedImage>();
+	public static BufferedImage getFavicon(String playerName) {
+		Mode mode = MotdState.getActiveMode();
+		BufferedImage image = null;
 		BufferedImage avatar = null;
 		BufferedImage icon = null;
 		
 		//Create avatar image
-		if (info.ENABLE_AVATAR_ICON) {
+		if (mode.ENABLE_AVATAR_ICON) {
 			try {
-				avatar = ImageIO.read(new URL("https://minotar.net/helm/" + ((!playerName.equals(info.DEFAULT_PLAYER_NAME)) ?  playerName : "steve") + "/64.png"));
+				avatar = ImageIO.read(new URL("https://minotar.net/helm/" + ((!playerName.equals(mode.DEFAULT_PLAYER_NAME)) ?  playerName : "steve") + "/64.png"));
 			} catch (IOException e) {e.printStackTrace();}
 		}
 		
-		if (info.ENABLE_AVATAR_ICON && info.ENABLE_OVERLAY_IMAGE) {
-			for (BufferedImage overlay : ImageUtil.getGIFFrames()) {
-				icon = ImageUtil.resizeImage(avatar);
-				icon.getGraphics().drawImage(overlay, 0, 0, 64, 64, null);
-				images.add(icon);
-			} 
+		if (mode.ENABLE_AVATAR_ICON && mode.ENABLE_OVERLAY_IMAGE) {
+			icon = ImageUtil.resizeImage(avatar);
+			icon.getGraphics().drawImage(overlay, 0, 0, 64, 64, null);
+			image = icon;
 		}
-		else if (info.ENABLE_AVATAR_ICON) {
-			images.add(avatar);
+		else if (mode.ENABLE_AVATAR_ICON) {
+			image = avatar;
 		}
-		else if (info.ENABLE_OVERLAY_IMAGE) {
-			images = overlay;
+		else if (mode.ENABLE_OVERLAY_IMAGE) {
+			image = overlay;
 		}
-		return images;
+		return image;
 	}
 	
 	public static void checkOverlayOn() {
-		Info info = Info.getActiveInfo();
+		Mode mode = MotdState.getActiveMode();
 		//Create overlay image
-		if (info.ENABLE_OVERLAY_IMAGE) {
-			if (info.GIF_OPTIMIZED) {
-				overlay = ImageUtil.getOptimizedGIFFrames();
-			}
-			else {
-				overlay = ImageUtil.getGIFFrames();
-			}
+		if (mode.ENABLE_OVERLAY_IMAGE) {
+			overlay = ImageUtil.getFavicon();
 		}
 	}
 }

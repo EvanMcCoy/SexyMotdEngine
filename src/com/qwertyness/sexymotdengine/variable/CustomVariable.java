@@ -1,6 +1,6 @@
 package com.qwertyness.sexymotdengine.variable;
 
-import com.qwertyness.sexymotdengine.response.Info;
+import com.qwertyness.sexymotdengine.response.Mode;
 import com.qwertyness.sexymotdengine.variable.Variable.VariableType;
 
 public class CustomVariable {
@@ -18,7 +18,7 @@ public class CustomVariable {
 	public CustomVariable(String name, String variable, String operator, String condition, String value, String negValue) {
 		this.name = name;
 		this.rawBuiltInVariable = variable;
-		for (Variable builtInVariable : Info.variables) {
+		for (Variable builtInVariable : Mode.variables) {
 			if (variable.contains(builtInVariable.name)) {
 				this.builtInVariable = builtInVariable;
 			}

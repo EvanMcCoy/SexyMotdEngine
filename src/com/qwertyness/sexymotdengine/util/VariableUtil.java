@@ -9,18 +9,18 @@ public class VariableUtil {
 		return variable.handleOperators(conditionalInput, playerName, ip);
 	}
 	
-	public static int trimNumber(String input) {
+	public static double trimNumber(String input) {
+		input = input.substring(1, input.length());
 		String output = "";
-		boolean inNumber = false;
 		for (char c : input.toCharArray()) {
-			if (c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '0') {
-				inNumber = true;
+			if (c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' 
+					|| c == '8' || c == '9' || c == '.') {
 				output += c;
 			}
-			else if (inNumber) {
+			else {
 				break;
 			}
 		}
-		return Integer.parseInt(output);
+		return Double.parseDouble(output);
 	}
 }

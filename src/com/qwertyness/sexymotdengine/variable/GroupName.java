@@ -1,6 +1,6 @@
 package com.qwertyness.sexymotdengine.variable;
 
-import com.qwertyness.sexymotdengine.ActivePlugin;
+import com.qwertyness.sexymotdengine.MotdState;
 
 public class GroupName extends Variable {
 
@@ -10,7 +10,7 @@ public class GroupName extends Variable {
 	
 	public String getValue(String playerName, String ip) {
 		String groupList = "";
-		for (String groupName : ActivePlugin.activePlugin.groupNames(playerName)) {
+		for (String groupName : MotdState.getActivePlugin().groupNames(playerName)) {
 			groupList += groupName + ", ";
 		}
 		groupList = groupList.substring(0, groupList.length()-2);
@@ -18,7 +18,7 @@ public class GroupName extends Variable {
 	}
 	
 	public String[] getRawValue(String playerName) {
-		return ActivePlugin.activePlugin.groupNames(playerName);
+		return MotdState.getActivePlugin().groupNames(playerName);
 	}
 	
 	public Value handleOperators(String operatorString, String playerName, String ip) {

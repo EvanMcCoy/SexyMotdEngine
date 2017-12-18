@@ -1,6 +1,6 @@
 package com.qwertyness.sexymotdengine.variable;
 
-import com.qwertyness.sexymotdengine.ActivePlugin;
+import com.qwertyness.sexymotdengine.MotdState;
 
 public class ServerName extends Variable {
 
@@ -9,7 +9,7 @@ public class ServerName extends Variable {
 	}
 	
 	public String getValue(String playerName, String ip) {
-		return ActivePlugin.activePlugin.serverName();
+		return MotdState.getActivePlugin().serverName();
 	}
 	
 	public Value handleOperators(String operatorString, String playerName, String ip) {
